@@ -1,0 +1,18 @@
+print ("2019 Day 1")
+f=open(r'C:\Users\julia\Desktop\AoC Day1.csv', "r")
+mylist =f.readlines()
+#Part 1
+fuel=0
+for i in range(len(mylist)):
+    fuel+=int(int(mylist[i])/3)-2
+print (fuel)
+
+#Part 2
+print ("Part 2")
+fuel=0
+for i in range(len(mylist)):
+    fuel1=int(mylist[i][0]/3)-2
+    while fuel1>0:
+        fuel+=fuel1
+        fuel1=int(fuel1/3)-2
+print (fuel)
