@@ -1,0 +1,49 @@
+print ("2018 Day 3")
+f=open(r'C:\Users\julia\Desktop\AoC18 Day3.csv', "r")
+mylist =f.read().splitlines()
+coord = []
+sizes = []
+for x in range(len(mylist)):
+    mylist[x].split()
+    coord.append(mylist[x].split()[2][:-1])
+    sizes.append(mylist[x].split()[3][:-1])
+coordinates = []
+for i in range(len(coord)):
+    cutoff=coord[i].find(",")
+    x=int(coord[i][:cutoff])
+    y=int(coord[i][cutoff+1:])
+    scutoff = sizes[i].find("x")
+    leng=int(sizes[i][:scutoff])
+    hei=int(sizes[i][scutoff+1:])
+    for a in range(leng):
+        for b in range(hei):
+            coordinates.append(str(x+a)+","+str(y+b))
+seen = set()
+seen2 = set()
+for item in coordinates:
+    if item in seen:
+        seen2.add(item)
+    else:
+        seen.add(item)
+print (len( list(seen2)))
+
+print ("Part2")
+for i in range(len(coord)):
+    coordinates=[]
+    cutoff=coord[i].find(",")
+    x=int(coord[i][:cutoff])
+    y=int(coord[i][cutoff+1:])
+    scutoff = sizes[i].find("x")
+    leng=int(sizes[i][:scutoff])
+    hei=int(sizes[i][scutoff+1:])
+    for a in range(leng):
+        for b in range(hei):
+            coordinates.append(str(x+a)+","+str(y+b))
+    counter=0
+    for g in coordinates:
+        if g in seen2:
+            counter+=100
+        else:
+            counter+=0
+    if counter<99:
+        print (i+1)
