@@ -1,0 +1,36 @@
+print ("2018 Day 2")
+f=open(r'C:\Users\julia\Desktop\AoC18 Day2.csv', "r")
+mylist =f.read().splitlines()
+print (mylist)
+twos = 0
+threes = 0
+for x in mylist:
+    twoscount = 0
+    threescount = 0
+    for y in x:
+        if x.count(y) == 2:
+            twoscount +=1
+        elif x.count(y) ==3:
+            threescount+=1
+    if twoscount > 0:
+        twos+=1
+    if threescount>0:
+        threes+=1
+print (twos*threes)
+Print ("Part 2")
+for x in range(len(mylist)):
+    for y in range(x+1,len(mylist)):
+        diff=0
+        for z in range(len(mylist[x])):
+            if mylist[x][z]==mylist[y][z]:
+                diff+=0
+            else:
+                diff+=1
+        if diff ==1:
+            result1=(mylist[x])
+            result2=(mylist[y])
+solution = ""
+for x in range(len(result1)):
+    if result1[x]==result2[x]:
+        solution+=result1[x]
+print (solution)
