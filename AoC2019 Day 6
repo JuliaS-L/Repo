@@ -1,0 +1,40 @@
+f = open(r"/Users/julia/Documents/AoCDay6.csv",mode='r',encoding='utf8', newline='\r\n')
+data=f.readlines()
+center = []
+orbit = []
+for x in data:
+    cutoff=x.find(")")
+    center.append(x[cutoff-3:cutoff])
+    orbit.append(x[cutoff+1:cutoff+4])
+sum=0
+for x in range(len(orbit)):
+    c=center[x]
+    steps=1
+    while c != "COM":
+        steps+=1
+        c=center[orbit.index(c)]
+    sum+=steps
+print (sum)
+    
+print ("Part 2")
+start=orbit.index("YOU")
+pathYOU = []
+c=center[start]
+while c != "COM":
+    pathYOU.append(c)
+    c=center[orbit.index(c)]
+start2=orbit.index("SAN")
+pathSAN = []
+c=center[start2]
+while c != "COM":
+    pathSAN.append(c)
+    c=center[orbit.index(c)]
+countSANSEP=0
+for x in pathSAN:
+    if x not in pathYOU:
+        countSANSEP+=1
+countYOUSEP=0
+for x in pathYOU:
+    if x not in pathSAN:
+        countYOUSEP+=1
+print (countSANSEP+ countYOUSEP)
