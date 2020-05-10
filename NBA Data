@@ -19,30 +19,32 @@ divisions = pd.read_excel (r'C:\Users\julia\Desktop\Startup\NBA Historical data.
 
 print("--- %s seconds to read data ---" % (time.time() - start_time))
 # go through data line by line
-# create a temporary df that includes only past games of this team, this season before this date
-
-# latest date is the last time they played
-
-# winrecord uses the same temporary dataframe to see # of games won before this date for this team in this season
-
-# data 2 uses the last game just calculated and determines if a team won their last game before the current one
-
-# I therefore here need to compare all lines where the date is smaller, so np.where will not work, is there another smart and clean way
-# that I can create these 3 columns?
-
 for x in range(len(df2)):
+
+# create a temporary df that includes only past games of this team, this season before this date
     data = df2[(df2['Team']==df2['Team'].iloc[x])& (df2['Date.1']<df2['Date.1'].iloc[x])& (df2['Season']==df2['Season'].iloc[x])]
+
+# latest date is the last time they played, add this to the line of the dataframe
     df2.loc[x,'last game'] = data['Date.1'].max()
-    
+
+# Wins&winrecord uses the same temporary dataframe to see # of games won before this date for this team in this season
+
     df2.loc[x,'Wins'] = data['Win/loss'].sum()
     if data['Win/loss'].count() == 0:
         df2.loc[x, 'winrecord'] = int(0)
     else:
         df2.loc[x, 'winrecord'] = data['Win/loss2'].sum()/data['Win/loss2'].count()*100
+
+# data 2 uses the last game's date just calculated and determines if a team won their last game before the current one
     data2 = df2[(df2['Team'] == df2['Team'].iloc[x]) & (df2['Date.1'] == data['Date.1'].max()) & (
                 df2['Season'] == df2['Season'].iloc[x])]
     if len(data2) == 0:
         df2.loc[x, 'Team wins last game'] = 0
     else:
         df2.loc[x,'Team wins last game'] = data2['Win/loss2'].max()
+
+# I therefore here need to compare all lines where the date is smaller, so np.where will not work, is there another smart and clean way
+# that I can create these 3 columns?
+
+
 df2['rest']= df2['Date.1'] - df2['last game']
