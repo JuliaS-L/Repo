@@ -1,0 +1,48 @@
+import time
+import pandas as pd
+import numpy as np
+import datetime
+#pd.set_option('display.max_rows', 500)
+pd.set_option('display.max_columns', 500)
+#pd.set_option('display.width', 1000)
+start_time = time.time()
+
+## Importing data from excel 
+
+df = pd.read_excel (r'C:\Users\julia\Desktop\Startup\NBA Historical data.xlsx', sheet_name='all games data')
+df['Date.1'] = pd.to_datetime(df['Date.1'])
+df2 = pd.read_excel (r'C:\Users\julia\Desktop\Startup\NBA Historical data.xlsx', sheet_name='all games 2')
+df2.sort_values("Date.1", inplace=True)
+df2['Date.1'] = pd.to_datetime(df2['Date.1'])
+df2['Win/loss2'] = np.where (df2['Win/loss'] == 'L',0,1)
+divisions = pd.read_excel (r'C:\Users\julia\Desktop\Startup\NBA Historical data.xlsx', sheet_name='Divisions')
+
+print("--- %s seconds to read data ---" % (time.time() - start_time))
+# go through data line by line
+# create a temporary df that includes only past games of this team, this season before this date
+
+# latest date is the last time they played
+
+# winrecord uses the same temporary dataframe to see # of games won before this date for this team in this season
+
+# data 2 uses the last game just calculated and determines if a team won their last game before the current one
+
+# I therefore here need to compare all lines where the date is smaller, so np.where will not work, is there another smart and clean way
+# that I can create these 3 columns?
+
+for x in range(len(df2)):
+    data = df2[(df2['Team']==df2['Team'].iloc[x])& (df2['Date.1']<df2['Date.1'].iloc[x])& (df2['Season']==df2['Season'].iloc[x])]
+    df2.loc[x,'last game'] = data['Date.1'].max()
+    
+    df2.loc[x,'Wins'] = data['Win/loss'].sum()
+    if data['Win/loss'].count() == 0:
+        df2.loc[x, 'winrecord'] = int(0)
+    else:
+        df2.loc[x, 'winrecord'] = data['Win/loss2'].sum()/data['Win/loss2'].count()*100
+    data2 = df2[(df2['Team'] == df2['Team'].iloc[x]) & (df2['Date.1'] == data['Date.1'].max()) & (
+                df2['Season'] == df2['Season'].iloc[x])]
+    if len(data2) == 0:
+        df2.loc[x, 'Team wins last game'] = 0
+    else:
+        df2.loc[x,'Team wins last game'] = data2['Win/loss2'].max()
+df2['rest']= df2['Date.1'] - df2['last game']
