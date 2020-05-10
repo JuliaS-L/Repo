@@ -28,8 +28,12 @@ for x in range(len(df2)):
     df2.loc[x,'last game'] = data['Date.1'].max()
 
 # Wins&winrecord uses the same temporary dataframe to see # of games won before this date for this team in this season
+# Winsequence gives all games results (WWLLLWWLWLWLWWLWLWWW) - which I would like to cut to only the last 5 characters but this too
+# is currently not working :(
 
-    df2.loc[x,'Wins'] = data['Win/loss'].sum()
+    df2.loc[x,'Wins'] = data['Win/loss2'].sum()
+    df2.loc[x,'Winsequence'] = data['Win/loss'].sum()
+    df2.loc[x,'Winsequence'] = df2.loc[x,'Winsequence'][-5:]
     if data['Win/loss'].count() == 0:
         df2.loc[x, 'winrecord'] = int(0)
     else:
