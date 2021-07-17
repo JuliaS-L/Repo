@@ -71,57 +71,80 @@ ALL_month_cats.rename(columns = {'name_y': 'category_group_name','name_x':'categ
 
 current_month_cats = ALL_month_cats.loc[ALL_month_cats['month']==this_month]
 user_group_input = pd.merge(current_month_cats, user_input, on='category_id')
-user_group_input = user_group_input.groupby(['category_group_name'], as_index=False).sum()
+
+#user_group_input = user_group_input.groupby(['category_group_name'], as_index=False).mean()
+#print (user_group_input)
+user_group_input = user_group_input.groupby(['category_group_name'], as_index=False).agg({'budgeted':'sum',
+                                                                                          'activity':'sum',
+                                                                                          'balance':'sum',
+                                                                                          'goal_target':'sum',
+                                                                                          'ideal_contribution':'sum',
+                                                                                          'max_amount':'sum',
+                                                                                          'savings_contr':'sum',
+                                                                                          'fix_cat':'mean',
+                                                                                          'cat_group_order':'mean'})
 user_group_input.drop(['budgeted','activity','balance','goal_target'],axis=1,inplace=True)
 
 
 ALL_month_cats['balance'] = ALL_month_cats['balance']/1000
 ALL_month_cats['budgeted'] = ALL_month_cats['budgeted']/1000
-ALL_month_cats['activity'] = ALL_month_cats['activity']/1000
+ALL_month_cats['activity'] = ALL_month_cats['activity']/1000*-1
 ALL_month_cats['goal_target'] = ALL_month_cats['goal_target']/1000
 ALL_month_cats = ALL_month_cats.loc[~ALL_month_cats['category_group_name'].isin( ['Internal Master Category','Credit Card Payments','Hidden Categories'])]
 
 ALL_active_month_cats = ALL_month_cats.loc[ALL_month_cats['month'].isin(active_months['month'].to_list())]
-ALL_active_month_cats['spending_this_month'] = np.where(ALL_active_month_cats['month']==this_month,ALL_active_month_cats['activity']*-1,0)
+
+#### Create new category_name, ID, group_ID using savings
+ALL_active_month_savings = pd.merge(ALL_active_month_cats, user_input, on='category_id')
+ALL_active_month_savings['budgeted'] = ALL_active_month_savings['budgeted'] * ALL_active_month_savings['savings_contr']
+ALL_active_month_savings['activity'] = ALL_active_month_savings['activity'] * ALL_active_month_savings['savings_contr']
+ALL_active_month_savings = ALL_active_month_savings.groupby(['month'], as_index=False).sum()
+ALL_active_month_savings['category_id'] = 'fake_category_id'
+ALL_active_month_savings['category_group_id'] = 'fake_category_group_id'
+ALL_active_month_savings['category_name'] = 'Total Savings'
+ALL_active_month_savings['category_group_name'] = 'Total Savings'
+
+ALL_active_month_savings.drop(['ideal_contribution', 'max_amount', 'savings_contr', 'fix_cat', 'cat_group_order'],axis=1,inplace=True)
+ALL_active_month_cats = pd.concat([ALL_active_month_cats,ALL_active_month_savings])
+
+
+ALL_active_month_cats['spending_this_month'] = np.where(ALL_active_month_cats['month']==this_month,ALL_active_month_cats['activity'],0)
 ALL_active_month_cats['spending_this_month%'] = ALL_active_month_cats['spending_this_month']/ALL_active_month_cats['spending_this_month'].sum()*100
-ALL_active_month_cats['spending_last_month'] = np.where(ALL_active_month_cats['month']==last_month,ALL_active_month_cats['activity']*-1,0)
+ALL_active_month_cats['spending_last_month'] = np.where(ALL_active_month_cats['month']==last_month,ALL_active_month_cats['activity'],0)
 ALL_active_month_cats['spending_last_month%'] = ALL_active_month_cats['spending_last_month']/ALL_active_month_cats['spending_last_month'].sum()*100
 ALL_active_month_cats['budgeting_this_month'] = np.where(ALL_active_month_cats['month']==this_month,ALL_active_month_cats['budgeted'],0)
 ALL_active_month_cats['budgeting_this_month%'] = ALL_active_month_cats['budgeting_this_month']/ALL_active_month_cats['budgeting_this_month'].sum()*100
 ALL_active_month_cats['budgeting_last_month'] = np.where(ALL_active_month_cats['month']==last_month,ALL_active_month_cats['budgeted'],0)
 ALL_active_month_cats['budgeting_last_month%'] = ALL_active_month_cats['budgeting_last_month']/ALL_active_month_cats['budgeting_last_month'].sum()*100
-ALL_active_month_cats['spending_this_month-1'] = np.where(ALL_active_month_cats['month']==last_month1,ALL_active_month_cats['activity']*-1,0)
-ALL_active_month_cats['spending_this_month-2'] = np.where(ALL_active_month_cats['month']==last_month2,ALL_active_month_cats['activity']*-1,0)
-ALL_active_month_cats['budgeting_this_month-1'] = np.where(ALL_active_month_cats['month']==last_month1,ALL_active_month_cats['budgeted']*-1,0)
-ALL_active_month_cats['budgeting_this_month-2'] = np.where(ALL_active_month_cats['month']==last_month2,ALL_active_month_cats['budgeted']*-1,0)
-
-
-
+ALL_active_month_cats['spending_this_month-1'] = np.where(ALL_active_month_cats['month']==last_month1,ALL_active_month_cats['activity'],0)
+ALL_active_month_cats['spending_this_month-2'] = np.where(ALL_active_month_cats['month']==last_month2,ALL_active_month_cats['activity'],0)
+ALL_active_month_cats['budgeting_this_month-1'] = np.where(ALL_active_month_cats['month']==last_month1,ALL_active_month_cats['budgeted'],0)
+ALL_active_month_cats['budgeting_this_month-2'] = np.where(ALL_active_month_cats['month']==last_month2,ALL_active_month_cats['budgeted'],0)
+#print (ALL_active_month_cats.columns)
 group_analysis = ALL_active_month_cats.groupby(['category_group_name'], as_index=False).sum()
 
-group_analysis['spending_vs_avg'] = group_analysis['spending_this_month']/((group_analysis['spending_last_month']+group_analysis['spending_this_month-1']+group_analysis['spending_this_month-2'])/3)
-
-
-group_analysis['spending_diff_mom'] = np.where(group_analysis['spending_last_month']==0,0,group_analysis['spending_this_month']/group_analysis['spending_last_month'])
-group_analysis['spending_diff_mom%'] = group_analysis['spending_diff_mom']/group_analysis['spending_diff_mom'].sum()*100
-group_analysis['budgeting_diff_mom'] = np.where(group_analysis['budgeting_last_month']==0,0,group_analysis['budgeting_this_month']/group_analysis['budgeting_last_month'])
-group_analysis['budgeting_diff_mom%'] = group_analysis['budgeting_diff_mom']/group_analysis['budgeting_diff_mom'].sum()*100
+group_analysis['spending_diff_mom'] = np.where(group_analysis['spending_last_month']==0,0,(group_analysis['spending_this_month']/group_analysis['spending_last_month']-1)*100)
+#group_analysis['spending_diff_mom%'] = np.where(group_analysis['spending_last_month%']==0,0,group_analysis['spending_this_month%']/group_analysis['spending_last_month%'])
+group_analysis['budgeting_diff_mom'] = np.where(group_analysis['budgeting_last_month']==0,0,(group_analysis['budgeting_this_month']/group_analysis['budgeting_last_month']-1)*100)
+#group_analysis['budgeting_diff_mom%'] = np.where(group_analysis['budgeting_last_month%']==0,0,group_analysis['budgeting_this_month%']/group_analysis['budgeting_last_month%'])
 group_analysis = pd.merge(group_analysis, user_group_input, on='category_group_name')
 group_analysis['ideal_contribution%'] = group_analysis['ideal_contribution']/group_analysis['ideal_contribution'].sum()*100
+
+group_analysis['spending_3m_diff'] = (group_analysis['spending_this_month']/((group_analysis['spending_last_month']+group_analysis['spending_this_month-1']+group_analysis['spending_this_month-2'])/3)-1)*100
+#group_analysis['spending_3m_diff%']
+group_analysis['budgeting_3m_diff'] = (group_analysis['budgeting_this_month']/((group_analysis['budgeting_last_month']+group_analysis['budgeting_this_month-1']+group_analysis['budgeting_this_month-2'])/3)-1)*100
+#group_analysis['budgeting_3m_diff%']
+
 group_analysis.sort_values(by=['cat_group_order'],inplace=True)
-group_analysis.drop(['cat_group_order','savings_contr','fix_cat','max_amount','spending_this_month-1','spending_this_month-2'],axis=1,inplace=True)
+
+group_analysis.drop(['cat_group_order','savings_contr','fix_cat','max_amount','budgeting_this_month-2','budgeting_this_month-1','spending_this_month-2','spending_this_month-1','budgeted','activity','goal_target','balance'],axis=1,inplace=True)
 group_analysis.reset_index(inplace=True)
+group_analysis.fillna(0,inplace=True)
 group_analysis.drop('index',axis=1,inplace=True)
-
-
-
 
 # spending diff vs 3-month previous avg
 # budgeting diff vs 3-month previous avg
 # + Savings category extra
-
-
-
 
 emoji_pattern = re.compile("["
         u"\U0001F600-\U0001F64F"  # emoticons
@@ -150,3 +173,5 @@ output = output.replace(u'\U0001f7e2','')
 text_file = open("YNAB_API_group_reporting.html", "w")
 text_file.write(output)
 text_file.close()
+
+
