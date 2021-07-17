@@ -9,31 +9,31 @@
 ## Goals
 Pacing for current month
 
-~~ - at this point in the month
-~~ - ideal spend
-~~ - my spend
-~~ - % of category spent
-~~ - absolute difference
-~~ - Excluding categories where activity=0, balance is 0 of category
-~~ - if category has a max_amount - pacing as % of max_amount
-~~ -   or set as fixed
-~~ - daily amount left in the category
+~~ - at this point in the month ~~
+~~ - ideal spend ~~
+~~ - my spend ~~
+~~ - % of category spent ~~
+~~ - absolute difference ~~
+~~ - Excluding categories where activity=0, balance is 0 of category ~~
+~~ - if category has a max_amount - pacing as % of max_amount ~~
+~~ -   or set as fixed ~~
+~~ - daily amount left in the category ~~
 ~~ - based on avg transaction amount in the category - number of transactions left? ~~
-~~ Avg transaction size recently vs longterm avg
+~~ Avg transaction size recently vs longterm avg ~~
 
 Bars Comparing Category Groups: 
 
-~~ in percentage and absolutes
-~~- spending this month
-~~ - spending last month
-~~ - budgeting this month
-~~ - budgeting last month
-~~ - Spending difference month-on-month
-~~ - Budgeting difference month-on-month~~
-~~ - Spending vs 3-month rolling avg
-~~ - Budgeting vs 3-month rolling avg
-~~- Ideal Monthly contribution~~
-- savings category based on user input
+~~ in percentage and absolutes ~~
+~~- spending this month ~~
+~~ - spending last month ~~
+~~ - budgeting this month ~~
+~~ - budgeting last month ~~
+~~ - Spending difference month-on-month ~~
+~~ - Budgeting difference month-on-month ~~
+~~ - Spending vs 3-month rolling avg ~~
+~~ - Budgeting vs 3-month rolling avg ~~
+~~- Ideal Monthly contribution ~~
+~~ - savings category based on user input ~~
 Networth Report
 Income vs Expense Report
 

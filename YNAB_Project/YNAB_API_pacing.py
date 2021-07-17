@@ -36,6 +36,7 @@ transactions = pd.json_normalize(budget, record_path=['data','budget','transacti
 months = pd.json_normalize(budget, record_path=['data','budget','months'])
 category_groups = pd.json_normalize(budget, record_path=['data','budget','category_groups'])
 ALL_month_cats = pd.json_normalize(budget, record_path=['data','budget','months','categories'],meta=[['data','budget','months','month']])
+accounts = pd.json_normalize(budget, record_path=['data','budget','accounts'])
 
 user_input_data = {'category_id': [
         "1100a8cc-2073-4e2b-9bba-3c594faa91de","88544615-450e-43a6-acbb-f2b253d160f5","dca4fcf5-ca77-4274-b70a-e115e0df1b72","2a76296b-d65e-4fec-a84e-60b6a4d5b87a","a3538e62-cdf7-462a-84d1-a40f311adf7b","4c839e72-d5f1-4100-9dc8-ea04f67b4b56","5de4c47e-132e-4d8c-b1e4-c1310e3d2853","f1a9e570-f69b-4cf5-86e8-69c790c18797","9f3c6b44-493f-4467-b9e4-96773cd4a4c9","ef884921-68ad-4255-bf70-c9451017c204","a85e5acf-058d-4995-b3f2-3a6402bef4b6","cfa2b061-158e-4e04-a267-de91a62c4934","8bbe50a4-1414-4bbb-8a0c-62c1f12eb271","d68a0f76-6764-40e5-9b39-bd865a777850","c8efd4c0-cd43-44f0-9d45-a456d018c342","4497eb7b-4377-4ff2-97fd-924b36a7b94b","4e333126-5759-46fc-9b2d-fe4491740600","eda4a99f-1acc-400c-a3c1-2c285963529c","293fca17-d5df-4fba-8d27-63b75909d1ce","c04e3d76-fe15-4b64-bb86-30aff7a614d0","1ecb11d4-74de-4b59-ae18-6071c85b9286","47ff1263-b0a6-4b03-9ad8-90d1245933ee","6562513d-69df-4b75-b23a-3c18fecbe692","f9d94116-98a7-4ff3-9c6b-9902a884f9e3","9d498318-0e2e-478b-b841-6f5f194c2191","c21fd623-e5de-44b5-9108-fc4cf3f8a816","5f566b2a-7124-4b46-8c14-efbb77252d71",
@@ -57,7 +58,7 @@ today = datetime.now().strftime("%Y-%m-01")
 active_months = months.loc[(months['income']>0) | (months['budgeted']> 0) | (months['activity']>0)]
 active_months.reset_index(inplace=True)
 active_months.drop('index',axis=1,inplace=True)
-
+#
 ## create table containing current month's Category detail information only
 current_month = active_months.loc[active_months['month']==today]
 
@@ -138,6 +139,15 @@ pacing_report.sort_values(by=['cat_group_order'],inplace=True)
 pacing_report.drop('cat_group_order',axis=1,inplace=True)
 pacing_report.reset_index(inplace=True)
 pacing_report.drop('index',axis=1,inplace=True)
+
+
+
+# contains months categorie's activity
+
+
+
+
+
 
 emoji_pattern = re.compile("["
         u"\U0001F600-\U0001F64F"  # emoticons
