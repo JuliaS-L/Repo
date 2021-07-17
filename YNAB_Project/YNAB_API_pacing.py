@@ -5,6 +5,7 @@ import pandas as pd
 import calendar
 import numpy as np
 import re
+import os
 from dateutil.relativedelta import relativedelta
 import requests
 import webbrowser
@@ -15,9 +16,18 @@ pd.options.mode.chained_assignment = None
 pd.set_option('display.width', 1000)
 ### Calling API and authenticating
 
-my_headers = {'Authorization' : 'Bearer token'}
-response = requests.get('https://api.youneedabudget.com/v1/budgets/budget_id', headers=my_headers)
+# saving sensitive info on the desktop
+desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+filename = desktop + "/details.txt"
+with open(filename, "r") as file1:
+    Lines = file1.readlines()
+token = Lines[0].strip()
+budget_id = Lines[1].strip()
+
+my_headers = {'Authorization' : f'Bearer {token}'}
+response = requests.get(f'https://api.youneedabudget.com/v1/budgets/{budget_id}', headers=my_headers)
 budget = response.json()
+
 
 ### Set up dataframes for categories, transactions, months and category groups
 ### Also ingesting manually written User Input data not taken from the API around Max and ideal contributions
@@ -46,7 +56,7 @@ today = datetime.now().strftime("%Y-%m-01")
 
 active_months = months.loc[(months['income']>0) | (months['budgeted']> 0) | (months['activity']>0)]
 active_months.reset_index(inplace=True)
-active_months.drop('index',1,inplace=True)
+active_months.drop('index',axis=1,inplace=True)
 
 ## create table containing current month's Category detail information only
 current_month = active_months.loc[active_months['month']==today]
@@ -102,7 +112,7 @@ transactions_top50=transactions_top50.groupby(['category_id']).mean()
 transactions_top50['average_transaction_50_amount'] = transactions_top50['amount']/1000*-1
 
 
-transactions_top50.drop(['amount'],1,inplace=True)
+transactions_top50.drop(['amount'],axis=1,inplace=True)
 transactions_top50.reset_index(inplace=True)
 
 ## add transaction info to pacing tabel and calculate transactions left
@@ -125,9 +135,9 @@ pacing_report.drop(['month_progress2'],axis=1,inplace=True)
 
 pacing_report['paced_ideal_spend'] = pacing_report['paced_ideal_spend']
 pacing_report.sort_values(by=['cat_group_order'],inplace=True)
-pacing_report.drop('cat_group_order',1,inplace=True)
+pacing_report.drop('cat_group_order',axis=1,inplace=True)
 pacing_report.reset_index(inplace=True)
-pacing_report.drop('index',1,inplace=True)
+pacing_report.drop('index',axis=1,inplace=True)
 
 emoji_pattern = re.compile("["
         u"\U0001F600-\U0001F64F"  # emoticons

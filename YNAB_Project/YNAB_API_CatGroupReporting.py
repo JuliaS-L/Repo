@@ -5,18 +5,30 @@ import pandas as pd
 import calendar
 import numpy as np
 import re
-
+import os
 from dateutil.relativedelta import relativedelta
 import requests
+import webbrowser
 pd.options.display.max_rows = 99
-pd.options.mode.chained_assignment = None
-pd.options.display.float_format = '{:,.2f}'.format
 pd.options.display.max_columns = 999
+pd.options.display.float_format = '{:,.2f}'.format
+pd.options.mode.chained_assignment = None
 pd.set_option('display.width', 1000)
 ### Calling API and authenticating
-my_headers = {'Authorization' : 'Bearer token'}
-response = requests.get('https://api.youneedabudget.com/v1/budgets/budget_id', headers=my_headers)
+# saving sensitive info on the desktop
+desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+filename = desktop + "/details.txt"
+
+with open(filename, "r") as file1:
+    Lines = file1.readlines()
+token = Lines[0].strip()
+budget_id = Lines[1].strip()
+
+my_headers = {'Authorization' : f'Bearer {token}'}
+
+response = requests.get(f'https://api.youneedabudget.com/v1/budgets/{budget_id}', headers=my_headers)
 budget = response.json()
+
 ### Set up dataframes for categories, transactions, months and category groups
 ### Also ingesting manually written User Input data not taken from the API around Max and ideal contributions
 categories = pd.json_normalize(budget, record_path=['data','budget','categories'])
@@ -49,7 +61,7 @@ last_month2 = datetime.today()+ relativedelta(months=-3)
 last_month2 = last_month2.strftime("%Y-%m-01")
 active_months = months.loc[(months['income']>0) | (months['budgeted']> 0) | (months['activity']>0)]
 active_months.reset_index(inplace=True)
-active_months.drop('index',1,inplace=True)
+active_months.drop('index',axis=1,inplace=True)
 
 
 ## Adding Category Group information to the table
@@ -97,9 +109,9 @@ group_analysis['budgeting_diff_mom%'] = group_analysis['budgeting_diff_mom']/gro
 group_analysis = pd.merge(group_analysis, user_group_input, on='category_group_name')
 group_analysis['ideal_contribution%'] = group_analysis['ideal_contribution']/group_analysis['ideal_contribution'].sum()*100
 group_analysis.sort_values(by=['cat_group_order'],inplace=True)
-group_analysis.drop(['cat_group_order','savings_contr','fix_cat','max_amount','spending_this_month-1','spending_this_month-2'],1,inplace=True)
+group_analysis.drop(['cat_group_order','savings_contr','fix_cat','max_amount','spending_this_month-1','spending_this_month-2'],axis=1,inplace=True)
 group_analysis.reset_index(inplace=True)
-group_analysis.drop('index',1,inplace=True)
+group_analysis.drop('index',axis=1,inplace=True)
 
 
 
