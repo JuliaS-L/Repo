@@ -35,7 +35,8 @@ Bars Comparing Category Groups:
 ~~- Ideal Monthly contribution ~~
 ~~ - savings category based on user input ~~
 Networth Report
-Income vs Expense Report
+~~ Income vs Expense Report ~~
+biggest payees in amount & transaction
 
 
 Line chart for category groups over time
