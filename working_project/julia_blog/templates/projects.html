@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+  <div class="jumbotron">
+    <div align='center'>
+      <h1 >Welcome to the Overview of Projects</h1>
+
+    </div>
+  </div>
+
+
+   {% if current_user.is_authenticated %}
+<h2>Changes to be made to the Project page</h2>
+<ul>
+    <li>Github link</li>
+    <li>trinket.io link</li>
+    <li>use pythonhisted.org/Flask-Markdown to make it look nicer</li>
+    <li>view to run the code dynamically</li>
+    <li>markdown for the code</li>
+    <li>markdown instructions on the create post/project page to help me</li>
+    <li>fix project update/delete function for logged in user</li>
+</ul>
+
+
+    <h2>Future Project Ideas I am planning on working on</h2>
+    <ul>
+      <li>Guess Numbers</li>
+        <li>to do list</li>
+        <ul><li>add items</li>
+        <li>cross off items</li>
+            <li>give items categories</li>
+            <li>see completed tasks</li>
+            <li>schedule tasks</li>
+        </ul>
+      <li>dict game with words of a certain length and no double letters in english</li>
+        <li>LMS</li>
+        <li>hangman</li>
+        <li>1 Phrase random language translator</li>
+        <li>Workout tracker/planner with visualisation of progress</li>
+        <li>PT scheduler/command centre</li>
+        <ul>
+            <li>track weight</li>
+            <li>log workouts (weight, exercise, time)</li>
+            <li>plan workout days</li>
+            <li>list of exercises can "add to my bucket"</li>
+            <li>set (& change) weight/reps/time for each exercise</li>
+            <li>create a plan randomly from preselected exercises spreading the load fairly</li>
+            <li>mealplanning?</li>
+        </ul>
+        <li>mortgage calculator with extra payments</li>
+        <li> Budgeting tool</li>
+        <ul>
+        <li>to be budgeted</li>
+        <li>automatic allocation to a category</li>
+        <li>calculation of amount needed based on due date</li>
+        <li> ability to overbudget in a certain month and adjusting the outstanding</li>
+        <li>saving x until a certain amount is reached</li>
+        <li>chosing a start date for each month</li>
+        </ul>
+        <li>unit converter</li>
+        <li>tip/tax calculator</li>
+        <li><a href="https:// github.com/karan/Projects"> Full list of Projects</a></li>
+        <li> Anything from 100 Python Challenges book</li>
+        <li>Anything from how to automate the boring stuff Book </li>
+    </ul>
+
+
+   {% endif %}
+    <br><br>
+
+<div class="container">
+
+{% for project in project_list.items %}
+<div class="card">
+  <div class="card-body">
+
+
+          <h2><a class='card-title' href="{{ url_for('projects.project', project_id=project.id) }}">{{ project.project_title }}</a></h2>
+        <a href="{{url_for('core.info')}}">Written by: Julia Schmidt-Lademann</a>
+          <p class="text-muted">Published on: {{ project.project_date.strftime('%Y-%m-%d') }}</p>
+          <br>
+            <p>{{project.project_description}}</p>
+            <a class ='btn btn-primary' href="{{ url_for('projects.project', project_id=project.id) }}">Project Details</a>
+          <br>
+        </div>
+      </div>
+{% endfor %}
+
+
+</div>
+
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+    {# http://flask.pocoo.org/snippets/44/ #}
+
+    {% for page_num in project_list.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+            {% if project_list.page == page_num %}
+              <li class="page-item disabled">
+                <a class="page-link" href="{{ url_for('projects.project_list', page=page_num) }}">{{ page_num }}</a></li>
+
+            {% else %}
+              <li class="page-item"><a class="page-link" href="{{ url_for('projects.project_list', page=page_num) }}">{{ page_num }}</a></li>
+            {% endif %}
+    {% endfor %}
+</nav>
+
+</div>
+{% endblock content %}

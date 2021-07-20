@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Thanks for reaching out</h2>
+<form>
+  <div class="form-group">
+    <label for="exampleFormControlInput1">Email address</label>
+    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
+  </div>
+
+  <div class="form-group">
+    <label for="exampleFormControlTextarea1">Why would you like to contact me?</label>
+    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+
+      <p>Unless specified I will contact you under the above email address.</p>
+  </div>
+
+  <button type="submit" class="btn btn-primary mb-2">Send Inquiry</button>
+</form>
+
+
+{% endblock %}

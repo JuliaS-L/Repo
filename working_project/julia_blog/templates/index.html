@@ -1,0 +1,82 @@
+
+{% extends "base.html" %}
+{% block content %}
+  <div class="jumbotron">
+    <br>
+
+<p>Data Analyst with an interest to keep learning, adding to my arsenal of varied skills.    <br>
+      Thank you for your interest in my page.    <br>
+      Please note that this Page is still under construction and further functionalities will be added as we go along.</p>
+
+      <br>
+
+
+   {% if current_user.is_authenticated %}
+
+       <h2>Fixes to be done</h2>
+    <ul>
+        <li>jinja2.exceptions.UndefinedError: 'julia_blog.projects.forms.ProjectForm object' has no attribute 'project_github_code'</li>
+        <li>Contact page containing a form with form data sent vial email to me</li>
+        <li>create about page under info</li>
+        <li>allow comments on blog posts and projects</li>
+        <li>set debug to false</li>
+        <li>Blogpost filters by categories? (how do I decide categories, and can I change them?)</li>
+        <li>align dateformats everywhere</li>
+        <li>check pagination</li>
+        <li>fix 403 error</li>
+        <li>add pictures to blog and projects and allow updating of picture</li>
+</ul>
+
+
+      <h2>Steps for Deployment:</h2>
+<p>while in the folder that contains the app.py file:</p>
+      <ul>
+<!--git location of projects:  C:\Users\julia/documents/python/website-project/projects/projects (master)-->
+<!--git location of app: C:\Users\julia\Documents\python\website-project\Final_Project-->
+          <li>heroku login</li>
+<li>git init</li>
+<li>heroku git:remote -a julia-schmidt-lademann</li>
+<li>git add .</li>
+<li>git commit -am "message"</li>
+<li>git push heroku master</li>
+<li>link under https://julia-schmidt-lademann.herokuapp.com/</li>
+    <br><br>
+
+   {% endif %}
+
+<h4>Here are some of the Blog Posts I have written:</h4>
+{% for post in posts.items %}
+
+      <div class="card" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title" href="{{ url_for('blog_posts.blog_post', blog_post_id=post.id) }}">{{ post.blog_title }}</h5>
+    <p class="card-text">{{post.blog_text| truncate(150) }}</p>
+    <a href="{{ url_for('blog_posts.blog_post', blog_post_id=post.id) }}" class="btn btn-primary">Read the full text</a>
+  </div>
+</div>
+
+
+{% endfor %}
+<p><a  href="{{url_for('blog_posts.blog_post_list')}}">See more..</a></p>
+      <br>
+
+      <h4>Here are some of the Coding Projects I have completed:</h4>
+{% for project in projects.items %}
+
+      <div class="card" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title" href="{{ url_for('projects.project', project_id=project.id) }}">{{ project.project_title }}</h5>
+    <p class="card-text">{{project.project_description}}</p>
+    <a class ='btn btn-primary' href="{{ url_for('projects.project', project_id=project.id) }}">Project Details</a>
+  </div>
+</div>
+
+{% endfor %}
+
+
+<p><a  href="{{url_for('projects.project_list')}}">See more..</a></p>
+
+
+
+  </div>
+{% endblock %}
