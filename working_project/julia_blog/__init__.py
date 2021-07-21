@@ -14,6 +14,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+os.path.join(basedir,'data.sqlight')
 
 app.config['SQLALCHEMY_TRACK_MODIFCATIONS'] = False
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 mail = Mail(app)
 db = SQLAlchemy(app)
 Migrate(app,db,render_as_batch=True)
