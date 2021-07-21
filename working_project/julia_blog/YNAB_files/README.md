@@ -40,6 +40,7 @@ Networth Report
 biggest payees in amount & transaction
 savings/needs/wants categorisation
 daily report/weekly/monthly for a single cat/cat group
+ability to report on a search criteria (hashtag, flag, etc eg for travels
 
 Line chart for category groups over time
 
