@@ -154,7 +154,9 @@ output = output.replace(u'\u2016','')
 output = output.replace(u'\U0001f7e2','')
 output = output.replace(u'\U0001f3a2','')
 output = output.replace('class="dataframe"','class="table table-striped table-hover')
-text_file = open("YNAB_API_group_reporting.html", "w")
+output = str(output.encode('utf-8').strip())
+path_parent = os.path.dirname(os.getcwd())
+text_file = open(path_parent+"/templates/YNAB_API_group_reporting.html", "w")
 text_file.write(output)
 text_file.close()
 
@@ -169,7 +171,9 @@ output = output.replace(u'\u2016','')
 output = output.replace(u'\U0001f7e2','')
 output = output.replace(u'\U0001f3a2','')
 output = output.replace('class="dataframe"','class="table table-striped table-hover')
-text_file = open("YNAB_API_group_reporting.html", "a")
+
+
+text_file = open(path_parent+"/templates/YNAB_API_group_reporting.html", "a")
 text_file.write(output)
 text_file.close()
 
@@ -202,8 +206,8 @@ def html_bar(column):
     html_string = html_string.replace(u'\U0001f7e2','')
     html_string = html_string.replace(u'\U0001f3a2','')
     #html_string = html_string.replace('class="dataframe"','class="table table-striped table-hover')
-
-    with open("YNAB_API_group_reporting.html", "a") as file_object:
+  #  html_string = str(html_string.encode('utf-8').strip())
+    with open(path_parent+"/templates/YNAB_API_group_reporting.html", "a") as file_object:
         file_object.write( html_string)
 
 html_bar('spending_this_month')

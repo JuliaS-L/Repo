@@ -17,16 +17,9 @@ pd.set_option('display.width', 1000)
 ### Calling API and authenticating
 
 # saving sensitive info on the desktop
-desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
-filename = desktop + "/details.txt"
-print (filename)
-with open(filename, "r") as file1:
-    Lines = file1.readlines()
-print (Lines[0])
-token = Lines[0].strip()
-budget_id = Lines[1].strip()
+print(os.getcwd())
+path_parent = os.path.dirname(os.getcwd())
 
-my_headers = {'Authorization' : f'Bearer {token}'}
-response = requests.get(f'https://api.youneedabudget.com/v1/budgets/{budget_id}', headers=my_headers)
-budget = response.json()
-print (budget)
+print (path_parent+'/templates')
+#path_parent = path_parent+"./Tableau-Outputs/{0} Bupa".format(lastMonth_title)
+print(os.getcwd())

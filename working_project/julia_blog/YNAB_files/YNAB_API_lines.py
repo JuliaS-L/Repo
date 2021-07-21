@@ -6,6 +6,7 @@ import calendar
 import matplotlib.pyplot as plt
 import numpy as np
 import re
+import os
 from dateutil.relativedelta import relativedelta
 import requests
 from YNAB_API_GroupReporting import ALL_active_month_cats,user_group_input,emoji_pattern
@@ -70,7 +71,8 @@ output = output.replace(u'\u2016','')
 output = output.replace(u'\u26ea','')
 output = output.replace(u'\U0001f7e2','')
 
-text_file = open("YNAB_API_lines_S.html", "a")
+path_parent = os.path.dirname(os.getcwd())
+text_file = open(path_parent+"/templates/YNAB_API_lines_S.html", "w")
 text_file.write(output)
 text_file.close()
 
@@ -121,6 +123,7 @@ output = output.replace(u'\u2016','')
 output = output.replace(u'\u26ea','')
 output = output.replace(u'\U0001f7e2','')
 
-text_file = open("YNAB_API_lines_B.html", "a")
+path_parent = os.path.dirname(os.getcwd())
+text_file = open(path_parent+"/templates/YNAB_API_lines_B.html", "w")
 text_file.write(output)
 text_file.close()
