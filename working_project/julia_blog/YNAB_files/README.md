@@ -34,11 +34,12 @@ Bars Comparing Category Groups:
 ~~ - Budgeting vs 3-month rolling avg ~~
 ~~- Ideal Monthly contribution ~~
 ~~ - savings category based on user input ~~
-!!!Total savings category MUST be excluded from spending %
+!!! Total savings category MUST be excluded from spending %
 Networth Report
 ~~ Income vs Expense Report ~~
 biggest payees in amount & transaction
-
+savings/needs/wants categorisation
+daily report/weekly/monthly for a single cat/cat group
 
 Line chart for category groups over time
 
