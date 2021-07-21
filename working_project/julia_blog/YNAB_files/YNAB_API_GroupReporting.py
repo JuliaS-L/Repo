@@ -71,7 +71,14 @@ ALL_active_month_savings['category_group_name'] = 'Total Savings'
 
 ALL_active_month_savings.drop(['ideal_contribution', 'max_amount', 'savings_contr', 'fix_cat', 'cat_group_order'],axis=1,inplace=True)
 
-ALL_active_month_cats = pd.concat([ALL_active_month_cats,ALL_active_month_savings])
+ALL_active_month_savings['spending_this_month'] = np.where(ALL_active_month_savings['month']==this_month,ALL_active_month_savings['activity'],0)
+ALL_active_month_savings['spending_last_month'] = np.where(ALL_active_month_savings['month']==last_month,ALL_active_month_savings['activity'],0)
+ALL_active_month_savings['budgeting_this_month'] = np.where(ALL_active_month_savings['month']==this_month,ALL_active_month_savings['budgeted'],0)
+ALL_active_month_savings['budgeting_last_month'] = np.where(ALL_active_month_savings['month']==last_month,ALL_active_month_savings['budgeted'],0)
+ALL_active_month_savings['spending_this_month-1'] = np.where(ALL_active_month_savings['month']==last_month1,ALL_active_month_savings['activity'],0)
+ALL_active_month_savings['spending_this_month-2'] = np.where(ALL_active_month_savings['month']==last_month2,ALL_active_month_savings['activity'],0)
+ALL_active_month_savings['budgeting_this_month-1'] = np.where(ALL_active_month_savings['month']==last_month1,ALL_active_month_savings['budgeted'],0)
+ALL_active_month_savings['budgeting_this_month-2'] = np.where(ALL_active_month_savings['month']==last_month2,ALL_active_month_savings['budgeted'],0)
 
 ALL_active_month_cats['spending_this_month'] = np.where(ALL_active_month_cats['month']==this_month,ALL_active_month_cats['activity'],0)
 ALL_active_month_cats['spending_this_month%'] = ALL_active_month_cats['spending_this_month']/ALL_active_month_cats['spending_this_month'].sum()*100
@@ -85,13 +92,17 @@ ALL_active_month_cats['spending_this_month-1'] = np.where(ALL_active_month_cats[
 ALL_active_month_cats['spending_this_month-2'] = np.where(ALL_active_month_cats['month']==last_month2,ALL_active_month_cats['activity'],0)
 ALL_active_month_cats['budgeting_this_month-1'] = np.where(ALL_active_month_cats['month']==last_month1,ALL_active_month_cats['budgeted'],0)
 ALL_active_month_cats['budgeting_this_month-2'] = np.where(ALL_active_month_cats['month']==last_month2,ALL_active_month_cats['budgeted'],0)
+ALL_active_month_cats = pd.concat([ALL_active_month_cats,ALL_active_month_savings])
+ALL_active_month_cats['spending_this_month%'] = np.where(ALL_active_month_cats['category_name']=='Total Savings',ALL_active_month_cats['spending_this_month']/ALL_active_month_cats['spending_this_month'].sum()*100,ALL_active_month_cats['spending_this_month%'])
+ALL_active_month_cats['spending_last_month%'] = np.where(ALL_active_month_cats['category_name']=='Total Savings',ALL_active_month_cats['spending_last_month']/ALL_active_month_cats['spending_last_month'].sum()*100,ALL_active_month_cats['spending_last_month%'])
+ALL_active_month_cats['budgeting_this_month%'] = np.where(ALL_active_month_cats['category_name']=='Total Savings',ALL_active_month_cats['budgeting_this_month']/ALL_active_month_cats['budgeting_this_month'].sum()*100,ALL_active_month_cats['budgeting_this_month%'])
+ALL_active_month_cats['budgeting_last_month%'] = np.where(ALL_active_month_cats['category_name']=='Total Savings',ALL_active_month_cats['budgeting_last_month']/ALL_active_month_cats['budgeting_last_month'].sum()*100,ALL_active_month_cats['budgeting_last_month%'])
 
 group_analysis = ALL_active_month_cats.groupby(['category_group_name'], as_index=False).sum()
 
 group_analysis['spending_diff_mom'] = np.where(group_analysis['spending_last_month']==0,0,(group_analysis['spending_this_month']/group_analysis['spending_last_month']-1)*100)
 group_analysis['budgeting_diff_mom'] = np.where(group_analysis['budgeting_last_month']==0,0,(group_analysis['budgeting_this_month']/group_analysis['budgeting_last_month']-1)*100)
 group_analysis = pd.merge(group_analysis, user_group_input, on='category_group_name',how='left')
-print ("MUST FIX spending_this_month% to exlcude total spending category!!")
 group_analysis['ideal_contribution%'] = group_analysis['ideal_contribution']/group_analysis['ideal_contribution'].sum()*100
 group_analysis['spending_3m_diff'] = (group_analysis['spending_this_month']/((group_analysis['spending_last_month']+group_analysis['spending_this_month-1']+group_analysis['spending_this_month-2'])/3)-1)*100
 group_analysis['budgeting_3m_diff'] = (group_analysis['budgeting_this_month']/((group_analysis['budgeting_last_month']+group_analysis['budgeting_this_month-1']+group_analysis['budgeting_this_month-2'])/3)-1)*100
@@ -99,6 +110,22 @@ group_analysis.sort_values(by=['cat_group_order'],inplace=True)
 group_analysis.drop(['cat_group_order','savings_contr','fix_cat','max_amount','budgeting_this_month-2','budgeting_this_month-1','spending_this_month-2','spending_this_month-1','budgeted','activity','goal_target','balance'],axis=1,inplace=True)
 group_analysis.reset_index(inplace=True)
 group_analysis.fillna(0,inplace=True)
+group_analysis.drop('index',axis=1,inplace=True)
+
+total_analysis = group_analysis.copy()
+total_analysis = total_analysis.loc[total_analysis['category_group_name']!= 'Total Savings']
+total_analysis['category_group_name'] = "OVERALL"
+total_analysis = total_analysis.groupby(['category_group_name'], as_index=False).sum()
+
+total_analysis['spending_this_month%'] = 0
+total_analysis['spending_last_month%'] = 0
+total_analysis['budgeting_this_month%'] = 0
+total_analysis['budgeting_last_month%'] = 0
+total_analysis['ideal_contribution%'] = 0
+
+
+group_analysis = pd.concat([group_analysis,total_analysis])
+group_analysis.reset_index(inplace=True)
 group_analysis.drop('index',axis=1,inplace=True)
 
 category_analysis = ALL_active_month_cats.groupby(['category_name','category_id'], as_index=False).sum()

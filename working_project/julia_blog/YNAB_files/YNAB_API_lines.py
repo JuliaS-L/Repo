@@ -30,12 +30,7 @@ groups  = set(ALL_active_month_cats_spending['category_group_name'].tolist())
 
 #https://canvasjs.com/javascript-charts/multi-series-line-chart/
 
-html_file = """<!DOCTYPE HTML>
-<html>
-<head>
-<script>
-window.onload = function () {
-var chart = new CanvasJS.Chart("chartContainer", {
+html_file = """<!DOCTYPE HTML><html><head><script>window.onload = function () {var chart = new CanvasJS.Chart("chartContainer", {
 	title: {text: "Spending over time"},axisX: {valueFormatString: "MMM YYYY"},
 	axisY: {title: "Amount Spent",prefix: "",suffix: ""},toolTip: {shared: true},legend: {cursor: "pointer",verticalAlign: "top",horizontalAlign: "center",dockInsidePlotArea: true,itemclick: toogleDataSeries},
 	data: ["""
@@ -60,15 +55,11 @@ for x in groups:
             html_file += str(abs(ALL_active_month_cats_spending['activity'].loc[((ALL_active_month_cats_spending['category_group_name'] == x)&(ALL_active_month_cats_spending['month']==y))].tolist()[0]))
         html_file += "},"
     html_file += "]},"
-html_file += """]});
-chart.render();
-function toogleDataSeries(e){
+html_file += """]});chart.render();function toogleDataSeries(e){
 	if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
 		e.dataSeries.visible = false;} else{e.dataSeries.visible = true;}chart.render();}}
-</script></head><body>
-<div id="chartContainer" style="height: 370px; width: 100%;"></div>
-<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-</body></html>"""
+</script></head><body><div id="chartContainer" style="height: 370px; width: 100%;"></div>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script></body></html>"""
 
 output = emoji_pattern.sub(r'', html_file)
 output = output.replace(u'\U0001F3A2','')
@@ -79,6 +70,57 @@ output = output.replace(u'\u2016','')
 output = output.replace(u'\u26ea','')
 output = output.replace(u'\U0001f7e2','')
 
-text_file = open("YNAB_API_lines.html", "a")
+text_file = open("YNAB_API_lines_S.html", "a")
+text_file.write(output)
+text_file.close()
+
+
+
+months  = ALL_active_month_cats_budgeting['month'].tolist()
+groups  = set(ALL_active_month_cats_budgeting['category_group_name'].tolist())
+
+#https://canvasjs.com/javascript-charts/multi-series-line-chart/
+
+html_file = """<!DOCTYPE HTML><html><head><script>window.onload = function () {var chart = new CanvasJS.Chart("chartContainer", {
+	title: {text: "Budgeting over time"},axisX: {valueFormatString: "MMM YYYY"},
+	axisY: {title: "Amount Budgeted",prefix: "",suffix: ""},toolTip: {shared: true},legend: {cursor: "pointer",verticalAlign: "top",horizontalAlign: "center",dockInsidePlotArea: true,itemclick: toogleDataSeries},
+	data: ["""
+for x in groups:
+    html_file += """
+	{type:"line",axisYType: "primary",name: """
+    html_file += "'"
+    html_file += x
+    html_file +="'"
+    html_file += """,showInLegend: true,markerSize: 0,yValueFormatString: "",dataPoints: 
+	["""
+    for y in months:
+        html_file += """
+	        { x: new Date("""
+        html_file += str(y[:4])
+        html_file += ", "
+        html_file += str(int(y[5:7])-1)
+        html_file += ", 01), y: "
+        if len(ALL_active_month_cats_budgeting['activity'].loc[((ALL_active_month_cats_budgeting['category_group_name'] == x)&(ALL_active_month_cats_budgeting['month']==y))].tolist())==0:
+            html_file += "0"
+        else:
+            html_file += str(abs(ALL_active_month_cats_budgeting['activity'].loc[((ALL_active_month_cats_budgeting['category_group_name'] == x)&(ALL_active_month_cats_budgeting['month']==y))].tolist()[0]))
+        html_file += "},"
+    html_file += "]},"
+html_file += """]});chart.render();function toogleDataSeries(e){
+	if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+		e.dataSeries.visible = false;} else{e.dataSeries.visible = true;}chart.render();}}
+</script></head><body><div id="chartContainer" style="height: 370px; width: 100%;"></div>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script></body></html>"""
+
+output = emoji_pattern.sub(r'', html_file)
+output = output.replace(u'\U0001F3A2','')
+output = output.replace(u'\U0001f7e1','')
+output = output.replace(u'\U0001f9f7','')
+output = output.replace(u'\U0001f9af','')
+output = output.replace(u'\u2016','')
+output = output.replace(u'\u26ea','')
+output = output.replace(u'\U0001f7e2','')
+
+text_file = open("YNAB_API_lines_B.html", "a")
 text_file.write(output)
 text_file.close()
