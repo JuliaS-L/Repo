@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+  <div class="jumbotron">
+    <div align='center'>
+      <h1 >Budget Overview by Category Groups</h1>
+
+    </div>
+  </div>
+<table border="1" class="table table-striped table-hover>
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>category_group_name</th>
+      <th>spending_this_month</th>
+      <th>spending_this_month%</th>
+      <th>spending_last_month</th>
+      <th>spending_last_month%</th>
+      <th>budgeting_this_month</th>
+      <th>budgeting_this_month%</th>
+      <th>budgeting_last_month</th>
+      <th>budgeting_last_month%</th>
+      <th>spending_diff_mom</th>
+      <th>budgeting_diff_mom</th>
+      <th>ideal_contribution</th>
+      <th>ideal_contribution%</th>
+      <th>spending_3m_diff</th>
+      <th>budgeting_3m_diff</th>
+    </tr>
+  </thead>
+  <tbody>
+
+
+    <div class="container">
+
+{% for cat_group in rows %}
+
+    <tr>
+      <th>cat_group.category_group_name</th>
+      <td>cat_group.</td>
+      <td>cat_group.</td>
+      <td>cat_group.</td>
+      <td>cat_group.</td>
+      <td>cat_group.</td>
+      <td>cat_group.</td>
+      <td>cat_group.</td>
+      <td>cat_group.</td>
+      <td>cat_group.</td>
+      <td>cat_group.</td>
+      <td>cat_group.</td>
+      <td>cat_group.</td>
+      <td>cat_group.</td>
+      <td>cat_group.</td>
+      <td>cat_group.</td>
+    </tr>
+{% endfor %}
+
+
+</div>
+
+</div>
+{% endblock content %}
+
