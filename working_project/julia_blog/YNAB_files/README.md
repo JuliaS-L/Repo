@@ -16,6 +16,7 @@ Bars Comparing Category Groups:
 in percentage and absolutes
 * !!! Total savings category MUST be excluded from spending %
 * Networth Report
+*   allow notes to be added to months
 * Income vs Expense Report 
 * biggest payees in amount & transaction
 * savings/needs/wants categorisation
