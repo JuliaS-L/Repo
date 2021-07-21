@@ -38,7 +38,10 @@ category_groups = pd.json_normalize(budget, record_path=['data','budget','catego
 ALL_month_cats = pd.json_normalize(budget, record_path=['data','budget','months','categories'],meta=[['data','budget','months','month']])
 accounts = pd.json_normalize(budget, record_path=['data','budget','accounts'])
 
-user_input = pd.read_excel('user_input.xlsx', index_col=0)
+path_parent = os.path.dirname(os.getcwd())
+
+
+user_input = pd.read_excel(path_parent+"/working_project/julia_blog/YNAB_files/user_input.xlsx", index_col=0)
 user_input.drop(['category_name','category_group_id','category_group_name'],axis=1,inplace=True)
 
 
@@ -123,11 +126,11 @@ current_month_pacing = pd.merge(current_month_pacing, transactions_count, on='ca
 
 current_month_pacing.drop(['amount'],axis=1,inplace=True)
 current_month_pacing['transactions_left'] = current_month_pacing['balance']//current_month_pacing['average_transaction_amount']
-current_month_pacing['transaction_amount_change%'] = (current_month_pacing['average_transaction_amount']/current_month_pacing['average_transaction_50_amount']-1)*100
+current_month_pacing['transaction_amount_change_perc'] = (current_month_pacing['average_transaction_amount']/current_month_pacing['average_transaction_50_amount']-1)*100
 
 
 ### New Table to remove unused columns
-pacing_report = current_month_pacing.loc[:, ['category_group_name', 'category_name', 'activity','paced_ideal_spend','daily_amount_target','daily_amount_left','pacing','pacing_perc','average_transaction_amount','transactions_left','month_progress','cat_group_order','transaction_amount_change%','transaction_count']]
+pacing_report = current_month_pacing.loc[:, ['category_group_name', 'category_name', 'activity','paced_ideal_spend','daily_amount_target','daily_amount_left','pacing','pacing_perc','average_transaction_amount','transactions_left','month_progress','cat_group_order','transaction_amount_change_perc','transaction_count']]
 pacing_report['activity'] = pacing_report['activity']*-1
 pacing_report['month_progress2'] = pacing_report['month_progress']*100
 
@@ -140,14 +143,6 @@ pacing_report.drop(['month_progress2','cat_group_order'], axis=1, inplace=True)
 #pacing_report.drop('cat_group_order',axis=1,inplace=True)
 pacing_report.reset_index(inplace=True)
 pacing_report.drop('index',axis=1,inplace=True)
-
-
-
-# contains months categorie's activity
-
-
-
-
 
 
 emoji_pattern = re.compile("["
@@ -167,19 +162,19 @@ emoji_pattern = re.compile("["
         u"\u200d"
         u"\u2640-\u2642"
         "]+", flags=re.UNICODE)
-output = emoji_pattern.sub(r'', pacing_report.to_html())
-output = output.replace(u'\U0001F3A2','')
-output = output.replace(u'\U0001f7e1','')
-output = output.replace(u'\U0001f9f7','')
-output = output.replace(u'\U0001f9af','')
-output = output.replace(u'\u26ea','')
-output = output.replace(u'\u2016','')
-output = output.replace(u'\U0001f7e2','')
-output = output.replace(u'\U0001f3a2','')
-output = output.replace('class="dataframe"','class="table table-striped table-hover')
-path_parent = os.path.dirname(os.getcwd())
-text_file = open(path_parent+"/templates/YNAB_API_pacing.html", "w")
-text_file.write(output)
-text_file.close()
+# output = emoji_pattern.sub(r'', pacing_report.to_html())
+# output = output.replace(u'\U0001F3A2','')
+# output = output.replace(u'\U0001f7e1','')
+# output = output.replace(u'\U0001f9f7','')
+# output = output.replace(u'\U0001f9af','')
+# output = output.replace(u'\u26ea','')
+# output = output.replace(u'\u2016','')
+# output = output.replace(u'\U0001f7e2','')
+# output = output.replace(u'\U0001f3a2','')
+# output = output.replace('class="dataframe"','class="table table-striped table-hover')
+# path_parent = os.path.dirname(os.getcwd())
+# text_file = open(path_parent+"/templates/YNAB_API_pacing.html", "w")
+# text_file.write(output)
+# text_file.close()
 #webbrowser.open_new_tab("YNAB_API_pacing.html")
 
