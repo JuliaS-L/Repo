@@ -9,7 +9,7 @@
 ## Goals
 Pacing for current month
 
-
+* Spending goals with monthly recurrence should be paced weekly not monthly
 
 Bars Comparing Category Groups: 
 
