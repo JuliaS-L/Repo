@@ -1,0 +1,59 @@
+import pandas as pd
+import numpy as np
+
+pd.set_option('display.max_rows', 500)
+print ("2015 Day 5")
+f=open(r'inpt_2022.txt', "r")
+input =f.read().splitlines()
+df = pd.DataFrame (input, columns = ['input'])
+df['number_to_move'] = df['input'].apply(lambda s: s.split(' ')[1])
+df['from'] = df['input'].apply(lambda s: s.split(' ')[3])
+df['to'] = df['input'].apply(lambda s: s.split(' ')[5])
+print (df.head())
+input = {
+'1' : ['W','D','G','B','H','R','V'],
+'2' : ['J','N','G','C','R','F'],
+'3' : ['L','S','F','H','D','N','J'],
+'4' : ['J','D','S','V'],
+'5' : ['S','H','D','R','Q','W','N','V'],
+'6' : ['P','G','H','C','M'],
+'7' : ['F','J','B','G','L','Z','H','C'],
+'8' : ['S','J','R'],
+'9' : ['L','G','S','R','B','N','V','M'],
+}
+input2=input
+for x in range (len(df)):
+    from_var = df['from'][x]
+    to_var = df['to'][x]
+    for y in range(int(df['number_to_move'][x])):
+        new_tovar = input[to_var]
+        new_tovar.append(input[from_var][-1])
+        input_update = {to_var:new_tovar}
+        input.update(input_update)
+        input_update = {from_var:input[from_var][:-1]}
+        input.update(input_update)
+
+print (input)
+
+
+print ('#### PART 2 ####')
+
+input = input2
+
+for x in range (len(df)):
+    from_var = df['from'][x]
+    to_var = df['to'][x]
+    number_to_move=int(df['number_to_move'][x])
+    new_tovar = input[to_var]
+    to_append = input[from_var][-number_to_move:]
+    for x in range(len(to_append)):
+        # input[to_var][x]
+        new_tovar.append(to_append[x])
+        print (new_tovar)
+    # print (number_to_move,input[from_var][-number_to_move:])
+    input_update = {to_var:new_tovar}
+    input.update(input_update)
+    input_update = {from_var:input[from_var][:-number_to_move]}
+    input.update(input_update)
+print (input)
+
