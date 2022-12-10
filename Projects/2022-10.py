@@ -50,8 +50,9 @@ df = df.append(df2)
 df['position'] = cycles[:-1]
 # df['draw']=0
 print (df.head(10))
-df['draw'] = np.where(((df['position'] >= df['input']-1)&(df['position'] <= df['input']+1)), 1,0 )
+df['draw'] = np.where(((df['position'] >= df['input']-1)&(df['position'] <= df['input']+1)), '.',' ' )
 drawing = df['draw'].values.tolist()
+drawing = ''.join(drawing)
 # print (drawing)
 print (drawing[:40])
 print (drawing[40:80])
